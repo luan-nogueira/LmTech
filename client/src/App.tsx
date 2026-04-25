@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 
 function RouterComponent() {
   return (
-    <Router base="/">
+    <Router base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
       <Switch>
         <Route path={"/"} component={Home} />
         <Route path={"/404"} component={NotFound} />
