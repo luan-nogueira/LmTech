@@ -55,26 +55,26 @@ export default function DifferentialsSection() {
         </div>
 
         {/* Differentials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
           {differentials.map((differential, index) => {
             const Icon = differential.icon;
             return (
               <div
                 key={index}
-                className="glass-card p-8 group border-white/5 hover:border-primary/30 transition-all duration-500"
+                className="glass-card p-4 md:p-8 group border-white/5 hover:border-primary/30 transition-all duration-500"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {/* Icon Container with Glow */}
-                <div className="relative w-14 h-14 mb-6">
+                <div className="relative w-10 h-10 md:w-14 md:h-14 mb-4 md:mb-6">
                   <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg group-hover:bg-primary/40 transition-colors"></div>
-                  <div className="relative w-14 h-14 rounded-xl bg-gradient-to-br from-[#001533] to-[#001B3D] border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:border-primary/40 transition-all duration-500">
-                    <Icon size={28} className="text-primary group-hover:text-white transition-colors" />
+                  <div className="relative w-10 h-10 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-[#001533] to-[#001B3D] border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:border-primary/40 transition-all duration-500">
+                    <Icon className="w-5 h-5 md:w-7 md:h-7 text-primary group-hover:text-white transition-colors" />
                   </div>
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-white mb-4 group-hover:text-primary transition-colors tracking-tight">{differential.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed font-light">{differential.description}</p>
+                <h3 className="text-sm md:text-xl font-bold text-white mb-2 md:mb-4 group-hover:text-primary transition-colors tracking-tight">{differential.title}</h3>
+                <p className="text-slate-400 text-[10px] md:text-sm leading-relaxed font-light">{differential.description}</p>
               </div>
             );
           })}

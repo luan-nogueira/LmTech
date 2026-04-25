@@ -60,41 +60,41 @@ export default function PortfolioSection() {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
           {projects.map((project, index) => (
             <div
               key={index}
-              className="glass-card-hover p-8 group cursor-pointer border-white/5"
+              className="glass-card-hover p-4 md:p-8 group cursor-pointer border-white/5"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Category Badge */}
-              <div className="inline-block px-4 py-1 rounded-lg bg-primary/10 border border-primary/30 text-primary text-[10px] font-bold uppercase tracking-widest mb-6">
+              <div className="inline-block px-2 md:px-4 py-1 rounded-lg bg-primary/10 border border-primary/30 text-primary text-[8px] md:text-[10px] font-bold uppercase tracking-widest mb-3 md:mb-6">
                 {project.category}
               </div>
 
               {/* Title */}
-              <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-primary transition-colors tracking-tight">
+              <h3 className="text-sm md:text-2xl font-bold text-white mb-2 md:mb-3 group-hover:text-primary transition-colors tracking-tight">
                 {project.title}
               </h3>
 
               {/* Description */}
-              <p className="text-slate-400 text-sm font-light leading-relaxed mb-6">
+              <p className="text-slate-400 text-[10px] md:text-sm font-light leading-relaxed mb-4 md:mb-6 hidden sm:block">
                 {project.description}
               </p>
 
               {/* Tags */}
-              <div className="flex flex-wrap gap-2 mb-8">
+              <div className="flex flex-wrap gap-1 md:gap-2 mb-4 md:mb-8">
                 {project.tags.map((tag, i) => (
-                  <span key={i} className="text-[9px] px-3 py-1 rounded-md bg-white/5 text-slate-400 border border-white/5 group-hover:border-primary/20 transition-colors">
+                  <span key={i} className="text-[7px] md:text-[9px] px-2 md:px-3 py-0.5 md:py-1 rounded-md bg-white/5 text-slate-400 border border-white/5 group-hover:border-primary/20 transition-colors">
                     {tag}
                   </span>
                 ))}
               </div>
 
               {/* Link */}
-              <div className="flex items-center text-[11px] uppercase tracking-[0.2em] font-bold text-primary opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
+              <div className="flex items-center text-[9px] md:text-[11px] uppercase tracking-[0.2em] font-bold text-primary opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
                 <span>Ver Detalhes</span>
-                <ExternalLink size={14} className="ml-2 group-hover:translate-x-2 transition-transform duration-300" />
+                <ExternalLink size={12} className="ml-1 md:ml-2 group-hover:translate-x-2 transition-transform duration-300" />
               </div>
             </div>
           ))}

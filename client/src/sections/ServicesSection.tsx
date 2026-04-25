@@ -54,31 +54,31 @@ export default function ServicesSection() {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
               <div
                 key={index}
-                className="glass-card-hover p-8 group border-white/5"
+                className="glass-card-hover p-4 md:p-8 group border-white/5"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {/* Icon Container with Glow */}
-                <div className="relative w-14 h-14 mb-6">
+                <div className="relative w-10 h-10 md:w-14 md:h-14 mb-4 md:mb-6">
                   <div className="absolute inset-0 bg-primary/20 rounded-xl blur-lg group-hover:bg-primary/40 transition-colors"></div>
-                  <div className="relative w-14 h-14 rounded-xl bg-gradient-to-br from-[#001533] to-[#001B3D] border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:border-primary/40 transition-all duration-500">
-                    <Icon size={28} className="text-primary group-hover:text-white transition-colors" />
+                  <div className="relative w-10 h-10 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-[#001533] to-[#001B3D] border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:border-primary/40 transition-all duration-500">
+                    <Icon className="w-5 h-5 md:w-7 md:h-7 text-primary group-hover:text-white transition-colors" />
                   </div>
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-white mb-4 group-hover:text-primary transition-colors tracking-tight">{service.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed font-light mb-6">{service.description}</p>
+                <h3 className="text-sm md:text-xl font-bold text-white mb-2 md:mb-4 group-hover:text-primary transition-colors tracking-tight">{service.title}</h3>
+                <p className="text-slate-400 text-xs md:text-sm leading-relaxed font-light mb-4 md:mb-6">{service.description}</p>
 
                 {/* Subtle Interactive Link */}
-                <div className="flex items-center text-[11px] uppercase tracking-[0.2em] font-bold text-primary/60 group-hover:text-primary transition-all duration-300">
-                  <span>Explorar Detalhes</span>
-                  <ArrowRight size={14} className="ml-2 group-hover:translate-x-2 transition-transform duration-300" />
+                <div className="flex items-center text-[9px] md:text-[11px] uppercase tracking-[0.2em] font-bold text-primary/60 group-hover:text-primary transition-all duration-300">
+                  <span>Detalhes</span>
+                  <ArrowRight size={14} className="ml-1 md:ml-2 group-hover:translate-x-2 transition-transform duration-300" />
                 </div>
               </div>
             );
