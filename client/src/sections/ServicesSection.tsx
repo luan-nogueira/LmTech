@@ -1,4 +1,4 @@
-import { Globe, Cog, BarChart3, Zap, Smartphone, Rocket } from 'lucide-react';
+import { Globe, Cog, BarChart3, Zap, Smartphone, Rocket, ArrowRight } from 'lucide-react';
 
 const services = [
   {
