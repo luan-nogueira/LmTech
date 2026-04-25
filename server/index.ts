@@ -21,12 +21,10 @@ async function startServer() {
   app.use(express.static(staticPath));
 
   // Middleware para lidar com o roteamento do React (SPA)
-  // Qualquer rota que não for um arquivo estático retornará o index.html
   app.get("*", (req, res) => {
-    // Evita loop infinito se o index.html não existir
     res.sendFile(path.join(staticPath, "index.html"), (err) => {
       if (err) {
-        res.status(404).send("Erro: index.html não encontrado na pasta " + staticPath);
+        res.status(404).send("Erro: index.html nao encontrado na pasta " + staticPath);
       }
     });
   });
@@ -34,10 +32,10 @@ async function startServer() {
   const port = process.env.PORT || 3000;
 
   server.listen(port, () => {
-    console.log(`[Server] Rodando em http://localhost:${port}/`);
+    console.log(`[Server] Running on http://localhost:${port}/`);
   });
 }
 
 startServer().catch((err) => {
-  console.error("[Server] Erro ao iniciar:", err);
+  console.error("[Server] Error starting server:", err);
 });
