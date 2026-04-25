@@ -5,37 +5,31 @@ const services = [
     icon: Globe,
     title: 'Sites Profissionais',
     description: 'Criação de sites modernos, responsivos e otimizados para conversão e SEO.',
-    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
   {
     icon: Cog,
     title: 'Sistemas Sob Medida',
     description: 'Sistemas personalizados desenvolvidos especificamente para sua empresa.',
-    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
   {
     icon: BarChart3,
     title: 'Dashboards e Relatórios',
     description: 'Painéis inteligentes com dados em tempo real e visualizações poderosas.',
-    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
   {
     icon: Zap,
     title: 'Automação de Processos',
     description: 'Automatização de tarefas e integrações para aumentar produtividade.',
-    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
   {
     icon: Smartphone,
     title: 'Aplicativos Web e Mobile',
     description: 'Apps modernos, performáticos e com excelente experiência de usuário.',
-    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
   {
     icon: Rocket,
     title: 'Landing Pages que Convertem',
     description: 'Páginas focadas em vendas e captação de leads com alta taxa de conversão.',
-    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
 ];
 
@@ -57,6 +51,17 @@ export default function ServicesSection() {
           <p className="text-lg text-slate-400 max-w-2xl mx-auto font-light leading-relaxed">
             Soluções digitais desenhadas sob medida para impulsionar resultados e escalar o seu negócio com tecnologia de ponta.
           </p>
+          <div className="pt-4 flex justify-center">
+            <a
+              href="https://mgfmegagym.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-outline-premium inline-flex items-center gap-3 py-2 px-6"
+            >
+              <span>Ver Exemplo de Site</span>
+              <ExternalLink size={18} />
+            </a>
+          </div>
         </div>
 
         {/* Services Grid */}
@@ -79,18 +84,7 @@ export default function ServicesSection() {
 
                 {/* Content */}
                 <h3 className="text-sm md:text-xl font-bold text-white mb-2 md:mb-4 group-hover:text-primary transition-colors tracking-tight">{service.title}</h3>
-                <p className="text-slate-400 text-xs md:text-sm leading-relaxed font-light mb-4 md:mb-6">{service.description}</p>
-
-                {/* Demo Button */}
-                <a
-                  href={service.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/20 text-primary text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300"
-                >
-                  <span>Ver Exemplo</span>
-                  <ExternalLink size={14} />
-                </a>
+                <p className="text-slate-400 text-xs md:text-sm leading-relaxed font-light">{service.description}</p>
               </div>
             );
           })}
