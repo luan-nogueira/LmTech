@@ -52,36 +52,36 @@ export default function TestimonialsSection() {
         </div>
 
         {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8">
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="glass-card p-8 space-y-6 border-white/5 relative group"
+              className="glass-card p-4 md:p-8 space-y-3 md:space-y-6 border-white/5 relative group"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Quote Mark Decoration */}
-              <div className="absolute top-6 right-8 text-6xl text-primary/10 font-serif leading-none opacity-50 group-hover:text-primary/20 transition-colors">"</div>
+              <div className="absolute top-3 right-4 md:top-6 md:right-8 text-3xl md:text-6xl text-primary/10 font-serif leading-none opacity-50 group-hover:text-primary/20 transition-colors">"</div>
 
               {/* Stars */}
-              <div className="flex gap-1.5">
+              <div className="flex gap-1 md:gap-1.5">
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star key={i} size={18} className="fill-primary text-primary" />
+                  <Star key={i} className="w-3 h-3 md:w-4 md:h-4 fill-primary text-primary" />
                 ))}
               </div>
 
               {/* Text */}
-              <p className="text-slate-300 italic text-lg leading-relaxed relative z-10 font-light">
+              <p className="text-slate-300 italic text-[10px] md:text-lg leading-relaxed relative z-10 font-light">
                 "{testimonial.text}"
               </p>
 
               {/* Author */}
-              <div className="flex items-center gap-4 pt-6 border-t border-white/10 mt-6">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#001533] to-[#001B3D] border border-white/10 flex items-center justify-center font-bold text-white shadow-inner">
+              <div className="flex items-center gap-2 md:gap-4 pt-3 md:pt-6 border-t border-white/10 mt-3 md:mt-6">
+                <div className="w-6 h-6 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-[#001533] to-[#001B3D] border border-white/10 flex items-center justify-center font-bold text-white shadow-inner text-[10px] md:text-base">
                   {testimonial.avatar}
                 </div>
                 <div>
-                  <p className="text-white font-bold tracking-tight">{testimonial.name}</p>
-                  <p className="text-[10px] uppercase tracking-widest text-primary font-semibold mt-1">{testimonial.company}</p>
+                  <p className="text-white font-bold tracking-tight text-[11px] md:text-base">{testimonial.name}</p>
+                  <p className="text-[7px] md:text-[10px] uppercase tracking-widest text-primary font-semibold mt-0.5 md:mt-1">{testimonial.company}</p>
                 </div>
               </div>
             </div>
