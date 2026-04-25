@@ -45,21 +45,21 @@
 }
 
 :root {
-  /* Sophisticated Navy Theme */
+  /* Classic Professional Tech Theme */
   --radius: 0.75rem;
   --background: #000B1A; /* Fundo Navy Profundo */
   --foreground: #F8FAFC;
   
-  --primary: #D4AF37; /* Dourado Premium */
+  --primary: #3B82F6; /* Classic Blue 500 */
   --primary-foreground: #FFFFFF;
   
-  --secondary: #001B3D; /* Azul Marinho Corporativo */
-  --secondary-foreground: #E2E8F0;
+  --secondary: #0F172A; /* Slate 900 */
+  --secondary-foreground: #F8FAFC;
   
-  --accent: #FDE047; /* Dourado Claro */
-  --accent-foreground: #000B1A;
+  --accent: #60A5FA; /* Classic Blue 400 */
+  --accent-foreground: #0F172A;
   
-  --card: #001533; /* Card Navy Sutil */
+  --card: #001533;
   --card-foreground: #F8FAFC;
   
   --popover: #001533;
@@ -73,36 +73,35 @@
   
   --border: #1E293B;
   --input: #001533;
-  --ring: #D4AF37;
+  --ring: #3B82F6;
   
   /* Sidebar */
   --sidebar: #000B1A;
   --sidebar-foreground: #F8FAFC;
-  --sidebar-primary: #D4AF37;
-  --sidebar-primary-foreground: #000B1A;
+  --sidebar-primary: #3B82F6;
+  --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #001B3D;
   --sidebar-accent-foreground: #F8FAFC;
   --sidebar-border: #1E293B;
-  --sidebar-ring: #D4AF37;
+  --sidebar-ring: #3B82F6;
   
-  /* Gradientes de Gráficos - Tons de Dourado */
-  --chart-1: #D4AF37;
-  --chart-2: #FDE047;
-  --chart-3: #CA8A04;
-  --chart-4: #A16207;
-  --chart-5: #713F12;
+  /* Gradientes de Gráficos - Tons Profissionais */
+  --chart-1: #3B82F6;
+  --chart-2: #60A5FA;
+  --chart-3: #93C5FD;
+  --chart-4: #BFDBFE;
+  --chart-5: #DBEAFE;
 }
 
 .dark {
-  /* Mantendo consistência no tema escuro, pois a marca é baseada em dark mode */
   --background: #000B1A;
   --foreground: #F8FAFC;
-  --primary: #D4AF37;
-  --secondary: #001B3D;
-  --accent: #FDE047;
+  --primary: #3B82F6;
+  --secondary: #0F172A;
+  --accent: #60A5FA;
   --card: #001533;
   --border: #1E293B;
-  --ring: #D4AF37;
+  --ring: #3B82F6;
 }
 
 @layer base {
@@ -169,10 +168,10 @@
     }
   }
   
-  /* Sophisticated Navy Components */
+  /* Professional Tech Components */
   
   .gradient-text {
-    background: linear-gradient(135deg, #D4AF37, #FDE047, #CA8A04);
+    background: linear-gradient(135deg, #FFFFFF, #93C5FD);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -180,78 +179,78 @@
   
   .glass-card {
     @apply rounded-xl;
-    background: rgba(0, 21, 51, 0.7);
+    background: rgba(15, 23, 42, 0.4);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(212, 175, 55, 0.15);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   }
   
   .glass-card-hover {
-    @apply rounded-xl transition-all duration-500 ease-out;
-    background: rgba(0, 21, 51, 0.7);
+    @apply rounded-xl transition-all duration-300 ease-out;
+    background: rgba(15, 23, 42, 0.4);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
   
   .glass-card-hover:hover {
-    background: rgba(0, 21, 51, 0.9);
-    border-color: rgba(212, 175, 55, 0.4);
-    box-shadow: 0 20px 50px rgba(212, 175, 55, 0.15);
-    transform: translateY(-8px);
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
   }
   
   .navy-border {
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.05);
   }
   
   .btn-premium {
-    @apply px-8 py-3 rounded-full font-bold transition-all duration-500 uppercase tracking-wider text-sm;
-    background: linear-gradient(135deg, #D4AF37, #CA8A04);
+    @apply px-8 py-3 rounded-full font-bold transition-all duration-300 uppercase tracking-wider text-sm;
+    background: #2563EB;
     color: white;
     border: none;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
   }
   
   .btn-premium:hover {
-    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
-    transform: translateY(-3px) scale(1.02);
-    filter: brightness(1.1);
+    background: #1D4ED8;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+    transform: translateY(-2px);
   }
   
   .btn-outline-premium {
-    @apply px-8 py-3 rounded-full font-bold transition-all duration-500 uppercase tracking-wider text-sm;
+    @apply px-8 py-3 rounded-full font-bold transition-all duration-300 uppercase tracking-wider text-sm;
     background: transparent;
-    border: 2px solid rgba(212, 175, 55, 0.5);
-    color: #D4AF37;
+    border: 2px solid rgba(59, 130, 246, 0.4);
+    color: #60A5FA;
   }
   
   .btn-outline-premium:hover {
-    background: rgba(212, 175, 55, 0.1);
-    border-color: #D4AF37;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+    background: rgba(59, 130, 246, 0.1);
+    border-color: #3B82F6;
+    color: #3B82F6;
   }
   
   .section-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
   }
   
-  /* Animações */
+  /* Animações Reduzidas (Mais Profissional) */
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+    50% { transform: translateY(-10px); }
   }
   
   @keyframes glow {
-    0%, 100% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.5); }
-    50% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); }
+    0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.2); }
+    50% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
   }
   
   @keyframes fadeInUp {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(20px);
     }
     to {
       opacity: 1;
@@ -262,7 +261,7 @@
   @keyframes slideInRight {
     from {
       opacity: 0;
-      transform: translateX(50px);
+      transform: translateX(30px);
     }
     to {
       opacity: 1;
@@ -273,7 +272,7 @@
   @keyframes slideInLeft {
     from {
       opacity: 0;
-      transform: translateX(-50px);
+      transform: translateX(-30px);
     }
     to {
       opacity: 1;
@@ -284,7 +283,7 @@
   @keyframes scaleIn {
     from {
       opacity: 0;
-      transform: scale(0.95);
+      transform: scale(0.98);
     }
     to {
       opacity: 1;
@@ -305,27 +304,27 @@
   }
   
   .animate-float {
-    animation: float 3s ease-in-out infinite;
+    animation: float 4s ease-in-out infinite;
   }
   
   .animate-glow {
-    animation: glow 2s ease-in-out infinite;
+    animation: glow 3s ease-in-out infinite;
   }
   
   .animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
+    animation: fadeInUp 0.5s ease-out;
   }
   
   .animate-slide-in-right {
-    animation: slideInRight 0.6s ease-out;
+    animation: slideInRight 0.5s ease-out;
   }
   
   .animate-slide-in-left {
-    animation: slideInLeft 0.6s ease-out;
+    animation: slideInLeft 0.5s ease-out;
   }
   
   .animate-scale-in {
-    animation: scaleIn 0.6s ease-out;
+    animation: scaleIn 0.5s ease-out;
   }
   
   .hover-lift {
@@ -333,12 +332,12 @@
   }
   
   .hover-lift:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
   }
   
   .animate-gradient {
     background-size: 200% 200%;
-    animation: gradientShift 3s ease infinite;
+    animation: gradientShift 4s ease infinite;
   }
 }
