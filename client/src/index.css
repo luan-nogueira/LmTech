@@ -45,85 +45,64 @@
 }
 
 :root {
-  /* Tech Gradient Dinâmico - Cores Primárias */
-  --primary: #0066FF; /* Azul Neon */
-  --primary-foreground: #FFFFFF;
-  --secondary: #7C3AED; /* Roxo */
-  --secondary-foreground: #FFFFFF;
-  --accent: #06B6D4; /* Ciano */
-  --accent-foreground: #050B18;
+  /* Sophisticated Navy Theme */
+  --radius: 0.75rem;
+  --background: #000B1A; /* Fundo Navy Profundo */
+  --foreground: #F8FAFC;
   
-  /* Tema Dark - Base */
-  --radius: 0.65rem;
-  --background: #050B18; /* Preto profundo */
-  --foreground: #FFFFFF;
-  --card: #0A1228; /* Azul escuro */
-  --card-foreground: #FFFFFF;
-  --popover: #0A1228;
-  --popover-foreground: #FFFFFF;
-  --muted: #1A2F4F;
-  --muted-foreground: #A0AEC0;
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: #1A2F4F;
-  --input: #0A1228;
-  --ring: #0066FF;
+  --primary: #00A3FF; /* Azul Elétrico Sofisticado */
+  --primary-foreground: #FFFFFF;
+  
+  --secondary: #001B3D; /* Azul Marinho Corporativo */
+  --secondary-foreground: #E2E8F0;
+  
+  --accent: #00E0FF; /* Ciano Cristalino */
+  --accent-foreground: #000B1A;
+  
+  --card: #001533; /* Card Navy Sutil */
+  --card-foreground: #F8FAFC;
+  
+  --popover: #001533;
+  --popover-foreground: #F8FAFC;
+  
+  --muted: #0F172A;
+  --muted-foreground: #94A3B8;
+  
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  
+  --border: #1E293B;
+  --input: #001533;
+  --ring: #00A3FF;
   
   /* Sidebar */
-  --sidebar: #050B18;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #0066FF;
+  --sidebar: #000B1A;
+  --sidebar-foreground: #F8FAFC;
+  --sidebar-primary: #00A3FF;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #06B6D4;
-  --sidebar-accent-foreground: #050B18;
-  --sidebar-border: #1A2F4F;
-  --sidebar-ring: #0066FF;
+  --sidebar-accent: #001B3D;
+  --sidebar-accent-foreground: #F8FAFC;
+  --sidebar-border: #1E293B;
+  --sidebar-ring: #00A3FF;
   
-  /* Chart Colors - Gradientes */
-  --chart-1: #0066FF;
-  --chart-2: #7C3AED;
-  --chart-3: #06B6D4;
-  --chart-4: #0050D8;
-  --chart-5: #1E40AF;
+  /* Gradientes de Gráficos - Tons de Azul */
+  --chart-1: #00A3FF;
+  --chart-2: #38BDF8;
+  --chart-3: #0EA5E9;
+  --chart-4: #0284C7;
+  --chart-5: #0369A1;
 }
 
 .dark {
-  /* Tech Gradient Dinâmico - Dark Theme (padrão) */
-  --primary: #0066FF;
-  --primary-foreground: #FFFFFF;
-  --secondary: #7C3AED;
-  --secondary-foreground: #FFFFFF;
-  --accent: #06B6D4;
-  --accent-foreground: #050B18;
-  
-  --background: #050B18;
-  --foreground: #FFFFFF;
-  --card: #0A1228;
-  --card-foreground: #FFFFFF;
-  --popover: #0A1228;
-  --popover-foreground: #FFFFFF;
-  --secondary: #1A2F4F;
-  --secondary-foreground: #A0AEC0;
-  --muted: #1A2F4F;
-  --muted-foreground: #A0AEC0;
-  --accent: #06B6D4;
-  --accent-foreground: #050B18;
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: #1A2F4F;
-  --input: #0A1228;
-  --ring: #0066FF;
-  --chart-1: #0066FF;
-  --chart-2: #7C3AED;
-  --chart-3: #06B6D4;
-  --chart-4: #0050D8;
-  --chart-5: #1E40AF;
-  --sidebar: #050B18;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-accent: #06B6D4;
-  --sidebar-accent-foreground: #050B18;
-  --sidebar-border: #1A2F4F;
-  --sidebar-ring: #0066FF;
+  /* Mantendo consistência no tema escuro, pois a marca é baseada em dark mode */
+  --background: #000B1A;
+  --foreground: #F8FAFC;
+  --primary: #00A3FF;
+  --secondary: #001B3D;
+  --accent: #00E0FF;
+  --card: #001533;
+  --border: #1E293B;
+  --ring: #00A3FF;
 }
 
 @layer base {
@@ -190,69 +169,72 @@
     }
   }
   
-  /* Tech Gradient Dinâmico - Componentes Customizados */
+  /* Sophisticated Navy Components */
   
   .gradient-text {
-    background: linear-gradient(135deg, #0066FF, #7C3AED, #06B6D4);
+    background: linear-gradient(135deg, #00A3FF, #00E0FF, #38BDF8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   
   .glass-card {
-    @apply rounded-lg;
-    background: rgba(10, 18, 40, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 102, 255, 0.2);
+    @apply rounded-xl;
+    background: rgba(0, 21, 51, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 163, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   }
   
   .glass-card-hover {
-    @apply rounded-lg transition-all duration-300;
-    background: rgba(10, 18, 40, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 102, 255, 0.2);
+    @apply rounded-xl transition-all duration-500 ease-out;
+    background: rgba(0, 21, 51, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 163, 255, 0.15);
   }
   
   .glass-card-hover:hover {
-    background: rgba(10, 18, 40, 0.95);
-    border-color: rgba(0, 102, 255, 0.5);
-    box-shadow: 0 0 30px rgba(0, 102, 255, 0.2);
+    background: rgba(0, 21, 51, 0.9);
+    border-color: rgba(0, 163, 255, 0.4);
+    box-shadow: 0 20px 50px rgba(0, 163, 255, 0.15);
+    transform: translateY(-8px);
   }
   
-  .neon-border {
-    border: 2px solid #0066FF;
-    box-shadow: 0 0 10px rgba(0, 102, 255, 0.5), inset 0 0 10px rgba(0, 102, 255, 0.1);
+  .navy-border {
+    border: 1px solid rgba(0, 163, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 163, 255, 0.05);
   }
   
-  .btn-neon {
-    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300;
-    background: linear-gradient(135deg, #0066FF, #0050D8);
+  .btn-premium {
+    @apply px-8 py-3 rounded-full font-bold transition-all duration-500 uppercase tracking-wider text-sm;
+    background: linear-gradient(135deg, #00A3FF, #0284C7);
     color: white;
     border: none;
-    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 163, 255, 0.3);
   }
   
-  .btn-neon:hover {
-    box-shadow: 0 0 20px rgba(0, 102, 255, 0.6), 0 0 40px rgba(0, 102, 255, 0.3);
-    transform: translateY(-2px);
+  .btn-premium:hover {
+    box-shadow: 0 8px 25px rgba(0, 163, 255, 0.5);
+    transform: translateY(-3px) scale(1.02);
+    filter: brightness(1.1);
   }
   
-  .btn-outline-neon {
-    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300;
+  .btn-outline-premium {
+    @apply px-8 py-3 rounded-full font-bold transition-all duration-500 uppercase tracking-wider text-sm;
     background: transparent;
-    border: 2px solid #0066FF;
-    color: #0066FF;
-    cursor: pointer;
+    border: 2px solid rgba(0, 163, 255, 0.5);
+    color: #00A3FF;
   }
   
-  .btn-outline-neon:hover {
-    background: rgba(0, 102, 255, 0.1);
-    box-shadow: 0 0 15px rgba(0, 102, 255, 0.4);
+  .btn-outline-premium:hover {
+    background: rgba(0, 163, 255, 0.1);
+    border-color: #00A3FF;
+    box-shadow: 0 0 20px rgba(0, 163, 255, 0.2);
   }
   
   .section-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, #0066FF, transparent);
+    background: linear-gradient(90deg, transparent, rgba(0, 163, 255, 0.3), transparent);
   }
   
   /* Animações */

@@ -10,84 +10,82 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative min-h-screen pt-20 pb-20 overflow-hidden flex items-center"
-      style={{
-        backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663529153293/7pDi4eoXgtcLF2YPgS9jbb/lm-tech-hero-bg-jfBaZ4t7giTmMwV5iTizhC.webp)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
+      className="relative min-h-screen pt-20 pb-20 overflow-hidden flex items-center bg-[#000B1A]"
     >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-background/40 backdrop-blur-sm"></div>
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#00A3FF 0.5px, transparent 0.5px)', backgroundSize: '30px 30px' }}></div>
 
-      {/* Animated Orbs */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
+      {/* Overlay Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#000B1A]/80 to-[#000B1A]"></div>
+
+      {/* Animated Orbs - Navy Sophistication */}
+      <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-[#00A3FF]/10 rounded-full blur-[120px] animate-float"></div>
+      <div className="absolute bottom-[0%] right-[-5%] w-[600px] h-[600px] bg-[#00E0FF]/5 rounded-full blur-[150px] animate-float" style={{ animationDelay: '2s' }}></div>
 
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
-          <div className="space-y-6 animate-fade-in-up">
+          <div className="space-y-8 animate-fade-in-up">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 w-fit">
-              <Sparkles size={16} className="text-primary" />
-              <span className="text-sm text-primary font-medium">Inovação Digital</span>
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary/5 border border-primary/20 w-fit">
+              <Sparkles size={14} className="text-primary animate-pulse" />
+              <span className="text-[10px] uppercase tracking-[0.2em] text-primary font-bold">Inovação Digital Premium</span>
             </div>
 
             {/* Main Title */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
-              Transformamos
-              <span className="gradient-text block">ideias em soluções</span>
-              digitais.
+            <h1 className="text-5xl md:text-6xl lg:text-8xl font-extrabold text-white leading-[1.1] tracking-tight">
+              A Excelência em
+              <span className="gradient-text block">Soluções Digitais</span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-lg text-muted-foreground max-w-lg">
-              Desenvolvemos sites, sistemas e automações para empresas que desejam crescer com tecnologia. Somos especialistas em criar soluções personalizadas que geram resultados reais.
+            <p className="text-lg text-slate-400 max-w-lg leading-relaxed font-light">
+              Desenvolvemos ecossistemas digitais de alto impacto. Sites, sistemas e automações desenhados para elevar o patamar competitivo da sua empresa.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-5 pt-4">
               <button
                 onClick={() => scrollToSection('contato')}
-                className="btn-neon flex items-center justify-center gap-2 group"
+                className="btn-premium flex items-center justify-center gap-3 group"
               >
                 Solicitar Orçamento
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
               </button>
               <button
                 onClick={() => scrollToSection('servicos')}
-                className="btn-outline-neon flex items-center justify-center gap-2"
+                className="btn-outline-premium flex items-center justify-center gap-3"
               >
                 Ver Serviços
               </button>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 pt-8 border-t border-border/50">
-              <div>
-                <p className="text-2xl font-bold text-primary">+50</p>
-                <p className="text-sm text-muted-foreground">Projetos</p>
+            <div className="grid grid-cols-3 gap-8 pt-10 border-t border-white/5">
+              <div className="space-y-1">
+                <p className="text-3xl font-bold text-white tracking-tighter">+50</p>
+                <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Projetos</p>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-accent">+30</p>
-                <p className="text-sm text-muted-foreground">Clientes</p>
+              <div className="space-y-1">
+                <p className="text-3xl font-bold text-white tracking-tighter">+30</p>
+                <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Clientes</p>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-secondary">99%</p>
-                <p className="text-sm text-muted-foreground">Satisfação</p>
+              <div className="space-y-1">
+                <p className="text-3xl font-bold text-white tracking-tighter">99%</p>
+                <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Satisfação</p>
               </div>
             </div>
           </div>
 
-          {/* Right Content - Dashboard Mockup */}
+          {/* Right Content - Sophisticated Mockup */}
           <div className="relative hidden lg:block">
             <div className="relative z-10 animate-float" style={{ animationDelay: '0.5s' }}>
+              <div className="absolute inset-0 bg-primary/20 rounded-3xl blur-3xl -z-10 opacity-30"></div>
               <img
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310519663529153293/7pDi4eoXgtcLF2YPgS9jbb/lm-tech-dashboard-mockup-5yPFq9vS7TWS9xnVE386Ae.webp"
                 alt="Dashboard Mockup"
-                className="w-full drop-shadow-2xl"
+                className="w-full drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] rounded-2xl border border-white/5"
               />
             </div>
           </div>

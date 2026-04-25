@@ -41,62 +41,60 @@ const projects = [
 
 export default function PortfolioSection() {
   return (
-    <section id="portfolio" className="py-20 bg-background relative overflow-hidden">
-      {/* Background */}
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663529153293/7pDi4eoXgtcLF2YPgS9jbb/lm-tech-portfolio-bg-635sqs7Y6kaXF5WJo8YpcN.webp)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      ></div>
+    <section id="portfolio" className="py-24 bg-[#000B1A] relative overflow-hidden">
+      {/* Background Subtle Accent */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px]"></div>
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-white">
-            Nosso <span className="gradient-text">Portfólio</span>
+        <div className="text-center mb-20 space-y-4 animate-fade-in-up">
+          <div className="inline-block px-4 py-1 rounded-full bg-primary/5 border border-primary/20 mb-4">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-primary font-bold">Casos de Sucesso</span>
+          </div>
+          <h2 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight">
+            Nossos <span className="gradient-text">Projetos</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Conheça alguns dos projetos que desenvolvemos para nossos clientes. Cada projeto é uma oportunidade de inovação.
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto font-light leading-relaxed">
+            Uma seleção de soluções digitais de alto impacto que entregamos para nossos parceiros.
           </p>
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
             <div
               key={index}
-              className="glass-card-hover p-6 group cursor-pointer"
+              className="glass-card-hover p-8 group cursor-pointer border-white/5"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Category Badge */}
-              <div className="inline-block px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-semibold mb-4">
+              <div className="inline-block px-4 py-1 rounded-lg bg-primary/10 border border-primary/30 text-primary text-[10px] font-bold uppercase tracking-widest mb-6">
                 {project.category}
               </div>
 
               {/* Title */}
-              <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">
+              <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-primary transition-colors tracking-tight">
                 {project.title}
               </h3>
 
               {/* Description */}
-              <p className="text-muted-foreground text-sm mb-4">{project.description}</p>
+              <p className="text-slate-400 text-sm font-light leading-relaxed mb-6">
+                {project.description}
+              </p>
 
               {/* Tags */}
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div className="flex flex-wrap gap-2 mb-8">
                 {project.tags.map((tag, i) => (
-                  <span key={i} className="text-xs px-2 py-1 rounded bg-accent/20 text-accent">
+                  <span key={i} className="text-[9px] px-3 py-1 rounded-md bg-white/5 text-slate-400 border border-white/5 group-hover:border-primary/20 transition-colors">
                     {tag}
                   </span>
                 ))}
               </div>
 
               {/* Link */}
-              <div className="flex items-center text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                <span className="text-sm font-semibold">Ver projeto</span>
-                <ExternalLink size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+              <div className="flex items-center text-[11px] uppercase tracking-[0.2em] font-bold text-primary opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
+                <span>Ver Detalhes</span>
+                <ExternalLink size={14} className="ml-2 group-hover:translate-x-2 transition-transform duration-300" />
               </div>
             </div>
           ))}
