@@ -33,7 +33,7 @@ export default function Header() {
 
         {/* Desktop Navigation - Clean & Sophisticated */}
         <nav className="hidden lg:flex items-center gap-10">
-          {['Serviços', 'Sobre', 'Portfólio', 'Contato'].map((item) => (
+          {['Serviços', 'Sobre', 'Contato'].map((item) => (
             <button
               key={item}
               onClick={() => scrollToSection(item.toLowerCase())}
@@ -68,7 +68,7 @@ export default function Header() {
       {isOpen && (
         <nav className="lg:hidden bg-[#000B1A] border-b border-white/5 animate-fade-in-up">
           <div className="container mx-auto px-6 py-10 flex flex-col gap-6">
-            {['Serviços', 'Sobre', 'Portfólio', 'Contato'].map((item) => (
+            {['Serviços', 'Sobre', 'Contato'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase())}

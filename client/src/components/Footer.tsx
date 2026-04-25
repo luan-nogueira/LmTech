@@ -29,7 +29,7 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-slate-400 font-light">
               <li><a href="#servicos" className="hover:text-primary transition-colors flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-primary/50"></span>Serviços</a></li>
               <li><a href="#sobre" className="hover:text-primary transition-colors flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-primary/50"></span>Sobre</a></li>
-              <li><a href="#portfolio" className="hover:text-primary transition-colors flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-primary/50"></span>Portfólio</a></li>
+
               <li><a href="#contato" className="hover:text-primary transition-colors flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-primary/50"></span>Contato</a></li>
             </ul>
           </div>
