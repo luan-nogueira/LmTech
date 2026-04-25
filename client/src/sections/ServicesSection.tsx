@@ -1,35 +1,41 @@
-import { Globe, Cog, BarChart3, Zap, Smartphone, Rocket, ArrowRight } from 'lucide-react';
+import { Globe, Cog, BarChart3, Zap, Smartphone, Rocket, ExternalLink } from 'lucide-react';
 
 const services = [
   {
     icon: Globe,
     title: 'Sites Profissionais',
     description: 'Criação de sites modernos, responsivos e otimizados para conversão e SEO.',
+    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
   {
     icon: Cog,
     title: 'Sistemas Sob Medida',
     description: 'Sistemas personalizados desenvolvidos especificamente para sua empresa.',
+    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
   {
     icon: BarChart3,
     title: 'Dashboards e Relatórios',
     description: 'Painéis inteligentes com dados em tempo real e visualizações poderosas.',
+    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
   {
     icon: Zap,
     title: 'Automação de Processos',
     description: 'Automatização de tarefas e integrações para aumentar produtividade.',
+    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
   {
     icon: Smartphone,
     title: 'Aplicativos Web e Mobile',
     description: 'Apps modernos, performáticos e com excelente experiência de usuário.',
+    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
   {
     icon: Rocket,
     title: 'Landing Pages que Convertem',
     description: 'Páginas focadas em vendas e captação de leads com alta taxa de conversão.',
+    demoUrl: 'https://mgfmegagym.vercel.app/',
   },
 ];
 
@@ -75,11 +81,16 @@ export default function ServicesSection() {
                 <h3 className="text-sm md:text-xl font-bold text-white mb-2 md:mb-4 group-hover:text-primary transition-colors tracking-tight">{service.title}</h3>
                 <p className="text-slate-400 text-xs md:text-sm leading-relaxed font-light mb-4 md:mb-6">{service.description}</p>
 
-                {/* Subtle Interactive Link */}
-                <div className="flex items-center text-[9px] md:text-[11px] uppercase tracking-[0.2em] font-bold text-primary/60 group-hover:text-primary transition-all duration-300">
-                  <span>Detalhes</span>
-                  <ArrowRight size={14} className="ml-1 md:ml-2 group-hover:translate-x-2 transition-transform duration-300" />
-                </div>
+                {/* Demo Button */}
+                <a
+                  href={service.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/20 text-primary text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300"
+                >
+                  <span>Ver Exemplo</span>
+                  <ExternalLink size={14} />
+                </a>
               </div>
             );
           })}
