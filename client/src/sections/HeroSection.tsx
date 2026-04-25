@@ -1,4 +1,5 @@
 import { ArrowRight, Sparkles } from 'lucide-react';
+import heroMockup from '../assets/hero-mockup.png';
 
 export default function HeroSection() {
   const scrollToSection = (id: string) => {
@@ -83,8 +84,8 @@ export default function HeroSection() {
             <div className="relative z-10 animate-float" style={{ animationDelay: '0.5s' }}>
               <div className="absolute inset-0 bg-primary/20 rounded-3xl blur-3xl -z-10 opacity-30"></div>
               <img
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663529153293/7pDi4eoXgtcLF2YPgS9jbb/lm-tech-dashboard-mockup-5yPFq9vS7TWS9xnVE386Ae.webp"
-                alt="Dashboard Mockup"
+                src={heroMockup}
+                alt="Dashboard Mockup Premium"
                 className="w-full drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] rounded-2xl border border-white/5"
               />
             </div>
