@@ -361,7 +361,16 @@ export const useClientStore = create<ClientStoreState>()(
     }),
     {
       name: 'lmtech_client_database_v2',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() =>
+        typeof window !== 'undefined' && window.localStorage
+          ? window.localStorage
+          : {
+              getItem: () => null,
+              setItem: () => {},
+              removeItem: () => {},
+            }
+      ),
     }
   )
 );
+
