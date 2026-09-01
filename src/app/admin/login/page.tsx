@@ -10,8 +10,9 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { login, isAuthenticated, adminConfig } = useClientStore();
 
-  const [email, setEmail] = useState('luanmnogueira@gmail.com');
-  const [password, setPassword] = useState('LnKo2025@');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
