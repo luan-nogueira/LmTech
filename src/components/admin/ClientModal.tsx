@@ -41,12 +41,20 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
   const [metricsHighlight, setMetricsHighlight] = useState('');
   const [status, setStatus] = useState<ProjectStatus>('delivered');
   
-  const [projectValue, setProjectValue] = useState<number>(3000);
-  const [initialDeposit, setInitialDeposit] = useState<number>(1500);
+  const [projectValue, setProjectValue] = useState<string | number>(3000);
+  const [initialDeposit, setInitialDeposit] = useState<string | number>(1500);
   const [hasMonthlyFee, setHasMonthlyFee] = useState(true);
-  const [monthlyFeeValue, setMonthlyFeeValue] = useState<number>(150);
-  const [monthlyFeeDueDay, setMonthlyFeeDueDay] = useState<number>(10);
+  const [monthlyFeeValue, setMonthlyFeeValue] = useState<string | number>(150);
+  const [monthlyFeeDueDay, setMonthlyFeeDueDay] = useState<string | number>(10);
   const [notes, setNotes] = useState('');
+
+  const parseMoneyValue = (val: string | number): number => {
+    if (typeof val === 'number') return isNaN(val) ? 0 : val;
+    if (!val || typeof val !== 'string') return 0;
+    const clean = val.replace(/[^\d.,]/g, '').replace(/\./g, '').replace(',', '.');
+    const parsed = parseFloat(clean);
+    return isNaN(parsed) ? 0 : parsed;
+  };
 
   useEffect(() => {
     if (clientToEdit) {
@@ -67,10 +75,10 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
       setMetricsHighlight(clientToEdit.metricsHighlight || '');
       setStatus(clientToEdit.status || 'delivered');
       
-      setProjectValue(clientToEdit.projectValue || 0);
-      setInitialDeposit(clientToEdit.initialDeposit || 0);
+      setProjectValue(clientToEdit.projectValue ?? '');
+      setInitialDeposit(clientToEdit.initialDeposit ?? '');
       setHasMonthlyFee(clientToEdit.hasMonthlyFee ?? false);
-      setMonthlyFeeValue(clientToEdit.monthlyFeeValue || 0);
+      setMonthlyFeeValue(clientToEdit.monthlyFeeValue ?? '');
       setMonthlyFeeDueDay(clientToEdit.monthlyFeeDueDay || 10);
       setNotes(clientToEdit.notes || '');
     } else {
@@ -90,8 +98,8 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
       setTagsStr('Next.js, React, Tailwind, TypeScript');
       setMetricsHighlight('+150% Conversão');
       setStatus('delivered');
-      setProjectValue(2500);
-      setInitialDeposit(1250);
+      setProjectValue('');
+      setInitialDeposit('');
       setHasMonthlyFee(true);
       setMonthlyFeeValue(150);
       setMonthlyFeeDueDay(10);
@@ -114,6 +122,10 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
       .map((t) => t.trim())
       .filter((t) => t.length > 0);
 
+    const parsedProjectValue = parseMoneyValue(projectValue);
+    const parsedInitialDeposit = parseMoneyValue(initialDeposit);
+    const parsedMonthlyFee = parseMoneyValue(monthlyFeeValue);
+
     const clientData = {
       name,
       companyName,
@@ -131,13 +143,14 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
       metricsHighlight: metricsHighlight || undefined,
       status,
       startDate: new Date().toISOString().slice(0, 10),
-      projectValue: Number(projectValue) || 0,
-      initialDeposit: Number(initialDeposit) || 0,
+      projectValue: parsedProjectValue,
+      initialDeposit: parsedInitialDeposit,
       hasMonthlyFee,
-      monthlyFeeValue: hasMonthlyFee ? Number(monthlyFeeValue) || 0 : 0,
+      monthlyFeeValue: hasMonthlyFee ? parsedMonthlyFee : 0,
       monthlyFeeDueDay: Number(monthlyFeeDueDay) || 10,
       notes: notes || undefined,
     };
+
 
     if (clientToEdit) {
       updateClient(clientToEdit.id, clientData);
@@ -430,26 +443,36 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-300">Valor Total do Desenvolvimento (R$)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="50"
-                  value={projectValue}
-                  onChange={(e) => setProjectValue(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm"
-                />
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 select-none">
+                    R$
+                  </span>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0,00"
+                    value={projectValue}
+                    onChange={(e) => setProjectValue(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm font-medium"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-300">Entrada Recebida (R$)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="50"
-                  value={initialDeposit}
-                  onChange={(e) => setInitialDeposit(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm"
-                />
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 select-none">
+                    R$
+                  </span>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0,00"
+                    value={initialDeposit}
+                    onChange={(e) => setInitialDeposit(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm font-medium"
+                  />
+                </div>
               </div>
             </div>
 
@@ -479,14 +502,19 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-emerald-500/20">
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-slate-300">Valor da Mensalidade (R$/mês)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      step="10"
-                      value={monthlyFeeValue}
-                      onChange={(e) => setMonthlyFeeValue(Number(e.target.value))}
-                      className="w-full px-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm"
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 select-none">
+                        R$
+                      </span>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="0,00"
+                        value={monthlyFeeValue}
+                        onChange={(e) => setMonthlyFeeValue(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm font-medium"
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-1.5">
@@ -495,14 +523,16 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
                       type="number"
                       min="1"
                       max="31"
+                      placeholder="10"
                       value={monthlyFeeDueDay}
-                      onChange={(e) => setMonthlyFeeDueDay(Number(e.target.value))}
-                      className="w-full px-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm"
+                      onChange={(e) => setMonthlyFeeDueDay(e.target.value)}
+                      className="w-full px-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm font-medium"
                     />
                   </div>
                 </div>
               )}
             </div>
+
 
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-300">Anotações Internas (Privado)</label>
