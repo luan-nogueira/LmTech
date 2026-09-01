@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { X, Printer, Download, CheckCircle, Sparkles, Building, Calendar, DollarSign } from 'lucide-react';
+import { X, Printer, Sparkles } from 'lucide-react';
 import { Client } from '@/types/client';
 import { useClientStore } from '@/store/useClientStore';
 
@@ -16,12 +16,12 @@ export function ReceiptModal({ isOpen, onClose, client, referenceMonthYear }: Re
   const { adminConfig } = useClientStore();
   const receiptRef = useRef<HTMLDivElement>(null);
 
-  const [receiptNumber] = useState(`REC-${Date.now().toString().slice(-6)}`);
+  const [receiptNumber] = useState(() => `REC-${Math.floor(100000 + Math.random() * 900000)}`);
   const [serviceDescription, setServiceDescription] = useState(
     `Serviços de Hospedagem em Nuvem, Manutenção Técnica, Otimização de Performance e Suporte Prioritário da Plataforma Web.`
   );
   const [amount, setAmount] = useState(client.monthlyFeeValue || 150);
-  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().slice(0, 10));
+  const [paymentDate, setPaymentDate] = useState(() => new Date().toISOString().slice(0, 10));
 
   if (!isOpen) return null;
 
@@ -63,70 +63,147 @@ export function ReceiptModal({ isOpen, onClose, client, referenceMonthYear }: Re
           </div>
         </div>
 
-        {/* Printable Receipt Body */}
-        <div ref={receiptRef} className="p-8 sm:p-10 bg-white text-slate-900 space-y-6">
+        {/* Printable Document */}
+        <div ref={receiptRef} className="p-8 sm:p-10 bg-[#0c101a] text-slate-100 font-sans print:p-0 print:bg-white print:text-black">
           
-          {/* Receipt Header */}
-          <div className="flex items-start justify-between border-b-2 border-slate-900 pb-6">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800 print:border-slate-300">
             <div>
-              <div className="text-2xl font-black tracking-tight text-blue-900">LM TECH</div>
-              <div className="text-xs font-bold uppercase tracking-widest text-slate-600">
-                Soluções Digitais & Desenvolvimento Web
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-black tracking-tight text-white print:text-black">
+                  LM <span className="text-blue-400">TECH</span>
+                </span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-bold border border-blue-500/20 print:border-slate-400 print:text-slate-700">
+                  DIGITAL
+                </span>
               </div>
-              <div className="text-xs text-slate-500 mt-1">
-                {adminConfig.companyPhone} • {adminConfig.companyEmail}
+              <p className="text-xs text-slate-400 mt-1 print:text-slate-600">
+                Soluções Digitais & Engenharia de Software
+              </p>
+              <p className="text-xs text-slate-400 print:text-slate-600">
+                {adminConfig.supportEmail} • {adminConfig.supportPhone}
+              </p>
+            </div>
+
+            <div className="text-left sm:text-right">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block print:text-slate-500">
+                Comprovante de Pagamento
+              </span>
+              <span className="text-lg font-mono font-bold text-cyan-400 print:text-blue-700">
+                #{receiptNumber}
+              </span>
+              <p className="text-xs text-slate-400 mt-0.5 print:text-slate-600">
+                Emissão: {new Date().toLocaleDateString('pt-BR')}
+              </p>
+            </div>
+          </div>
+
+          {/* Body Content */}
+          <div className="py-8 space-y-6">
+            <div className="p-4 rounded-2xl bg-[#141b2a] border border-slate-800 print:bg-slate-50 print:border-slate-200">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                Recebemos de:
+              </span>
+              <p className="text-lg font-bold text-white print:text-black">
+                {client.name} {client.companyName ? `(${client.companyName})` : ''}
+              </p>
+              {client.taxId && (
+                <p className="text-xs text-slate-400 print:text-slate-600">
+                  CPF/CNPJ: {client.taxId}
+                </p>
+              )}
+              {client.email && (
+                <p className="text-xs text-slate-400 print:text-slate-600">
+                  E-mail: {client.email}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 rounded-2xl bg-[#141b2a] border border-slate-800 print:bg-slate-50 print:border-slate-200">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                  Valor Total Pago
+                </span>
+                <span className="text-2xl font-extrabold text-emerald-400 print:text-emerald-700">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(amount)}
+                </span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#141b2a] border border-slate-800 print:bg-slate-50 print:border-slate-200">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                  Referência do Mês
+                </span>
+                <span className="text-lg font-bold text-white capitalize print:text-black">
+                  {monthName} de {year}
+                </span>
+                <p className="text-xs text-slate-400 mt-1 print:text-slate-600">
+                  Data do Pagamento: {new Date(paymentDate + 'T12:00:00').toLocaleDateString('pt-BR')}
+                </p>
               </div>
             </div>
 
-            <div className="text-right">
-              <div className="text-xl font-black text-slate-900">RECIBO DE PAGAMENTO</div>
-              <div className="text-xs font-bold text-blue-700 mt-0.5">Nº {receiptNumber}</div>
-              <div className="text-xs text-slate-500">Data: {new Date(paymentDate).toLocaleDateString('pt-BR')}</div>
+            <div className="p-4 rounded-2xl bg-[#141b2a] border border-slate-800 print:bg-slate-50 print:border-slate-200">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                Referente aos Serviços de:
+              </span>
+              <p className="text-xs sm:text-sm text-slate-300 print:text-slate-800 leading-relaxed">
+                {serviceDescription}
+              </p>
             </div>
           </div>
 
-          {/* Amount Box */}
-          <div className="p-4 rounded-xl bg-slate-100 border border-slate-300 flex items-center justify-between">
-            <span className="text-sm font-bold text-slate-700">VALOR RECEBIDO:</span>
-            <span className="text-2xl font-black text-blue-950">
-              R$ {Number(amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </span>
-          </div>
-
-          {/* Text Statement */}
-          <div className="text-sm leading-relaxed text-slate-700 space-y-4">
-            <p>
-              Recebemos de <strong>{client.companyName}</strong>
-              {client.document ? ` (Doc/CNPJ: ${client.document})` : ''}, representado(a) por{' '}
-              <strong>{client.name}</strong>, a quantia supra de{' '}
-              <strong>R$ {Number(amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>, referente a:
-            </p>
-
-            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium text-slate-800">
-              {serviceDescription} (Competência: {monthName}/{year})
+          {/* Footer & Signature */}
+          <div className="pt-6 border-t border-slate-800 print:border-slate-300 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="text-xs text-slate-400 print:text-slate-600 text-center sm:text-left">
+              <p className="font-semibold text-slate-300 print:text-slate-900">LM Tech — Soluções Digitais</p>
+              <p>Chave Pix: {adminConfig.pixKey} ({adminConfig.pixBeneficiary})</p>
             </div>
 
-            <p className="text-xs text-slate-600">
-              Forma de Pagamento: <strong>Pix / Transferência Bancária</strong>. Damos por este instrumento plena, rasa e irrevogável quitação pelo valor recebido.
-            </p>
+            <div className="text-center sm:text-right">
+              <div className="w-48 border-b border-slate-600 print:border-black mb-1 mx-auto sm:ml-auto"></div>
+              <span className="text-xs font-bold text-slate-300 print:text-black block">
+                {adminConfig.pixBeneficiary || 'Luan Nogueira'}
+              </span>
+              <span className="text-[10px] text-slate-500 uppercase tracking-wider">
+                Assinatura Autorizada
+              </span>
+            </div>
           </div>
 
-          {/* Signatures Footer */}
-          <div className="pt-8 mt-6 border-t border-slate-300 flex items-center justify-between text-xs text-slate-600">
+        </div>
+
+        {/* Edit fields toggle bar (hidden in print) */}
+        <div className="p-5 border-t border-slate-800 bg-[#090d16] print:hidden">
+          <p className="text-xs font-bold text-slate-400 mb-3">Ajustar Detalhes do Recibo:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <p className="font-bold text-slate-900">{adminConfig.pixName}</p>
-              <p className="text-[11px] text-slate-500">LM Tech — Soluções Digitais</p>
-              <p className="text-[11px] text-slate-500">Chave Pix: {adminConfig.pixKey}</p>
+              <label className="text-[10px] text-slate-400 block mb-1">Valor (R$)</label>
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(Number(e.target.value))}
+                className="w-full px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs"
+              />
             </div>
-
-            <div className="text-center">
-              <div className="w-48 border-b border-slate-900 pb-1 mb-1 font-bold text-slate-900">
-                Luan Nogueira
-              </div>
-              <span className="text-[10px] text-slate-500">Assinatura Digital do Emissor</span>
+            <div>
+              <label className="text-[10px] text-slate-400 block mb-1">Data Pagamento</label>
+              <input
+                type="date"
+                value={paymentDate}
+                onChange={(e) => setPaymentDate(e.target.value)}
+                className="w-full px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] text-slate-400 block mb-1">Descrição</label>
+              <input
+                type="text"
+                value={serviceDescription}
+                onChange={(e) => setServiceDescription(e.target.value)}
+                className="w-full px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs"
+              />
             </div>
           </div>
-
         </div>
 
       </div>
