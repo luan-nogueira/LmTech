@@ -164,12 +164,16 @@ const INITIAL_LEADS: LeadEstimate[] = [
 ];
 
 // Helper to persist state to server in background
-async function saveToServer(data: { clients?: Client[]; adminConfig?: Partial<AdminConfig>; leads?: LeadEstimate[] }) {
+async function saveToServer(data: { clients?: Client[]; adminConfig?: Partial<AdminConfig>; leads?: LeadEstimate[] }, adminPassword?: string) {
   if (typeof window === 'undefined') return;
   try {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (adminPassword) {
+      headers['x-admin-auth'] = adminPassword;
+    }
     await fetch('/api/clients', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(data),
     });
   } catch (err) {
@@ -282,7 +286,7 @@ export const useClientStore = create<ClientStoreState>()(
       updateAdminConfig: (newConfig) => {
         set((state) => {
           const updated = { ...state.adminConfig, ...newConfig };
-          saveToServer({ adminConfig: updated });
+          saveToServer({ adminConfig: updated }, updated.adminPassword);
           return { adminConfig: updated };
         });
       },
@@ -306,7 +310,7 @@ export const useClientStore = create<ClientStoreState>()(
 
         set((state) => {
           const updatedClients = [newClient, ...state.clients];
-          saveToServer({ clients: updatedClients });
+          saveToServer({ clients: updatedClients }, state.adminConfig.adminPassword);
           return { clients: updatedClients };
         });
 
@@ -324,7 +328,7 @@ export const useClientStore = create<ClientStoreState>()(
                 }
               : c
           );
-          saveToServer({ clients: updatedClients });
+          saveToServer({ clients: updatedClients }, state.adminConfig.adminPassword);
           return { clients: updatedClients };
         });
       },
@@ -343,7 +347,7 @@ export const useClientStore = create<ClientStoreState>()(
                 }
               : c
           );
-          saveToServer({ clients: updatedClients });
+          saveToServer({ clients: updatedClients }, state.adminConfig.adminPassword);
           return { clients: updatedClients };
         });
       },
@@ -351,7 +355,7 @@ export const useClientStore = create<ClientStoreState>()(
       deleteClient: (id) => {
         set((state) => {
           const updatedClients = state.clients.filter((c) => c.id !== id);
-          saveToServer({ clients: updatedClients });
+          saveToServer({ clients: updatedClients }, state.adminConfig.adminPassword);
           return { clients: updatedClients };
         });
       },
@@ -367,7 +371,7 @@ export const useClientStore = create<ClientStoreState>()(
                 }
               : c
           );
-          saveToServer({ clients: updatedClients });
+          saveToServer({ clients: updatedClients }, state.adminConfig.adminPassword);
           return { clients: updatedClients };
         });
       },
@@ -393,7 +397,7 @@ export const useClientStore = create<ClientStoreState>()(
             };
           });
 
-          saveToServer({ clients: updatedClients });
+          saveToServer({ clients: updatedClients }, state.adminConfig.adminPassword);
           return { clients: updatedClients };
         });
       },
@@ -415,7 +419,7 @@ export const useClientStore = create<ClientStoreState>()(
       updateLeadStatus: (id, status) => {
         set((state) => {
           const updatedLeads = state.leads.map((l) => (l.id === id ? { ...l, status } : l));
-          saveToServer({ leads: updatedLeads });
+          saveToServer({ leads: updatedLeads }, state.adminConfig.adminPassword);
           return { leads: updatedLeads };
         });
       },
@@ -423,12 +427,13 @@ export const useClientStore = create<ClientStoreState>()(
       deleteLead: (id) => {
         set((state) => {
           const updatedLeads = state.leads.filter((l) => l.id !== id);
-          saveToServer({ leads: updatedLeads });
+          saveToServer({ leads: updatedLeads }, state.adminConfig.adminPassword);
           return { leads: updatedLeads };
         });
       },
 
       resetToDefaults: () => {
+        const { adminConfig } = get();
         set({
           clients: INITIAL_CLIENTS,
           leads: INITIAL_LEADS,
@@ -438,7 +443,7 @@ export const useClientStore = create<ClientStoreState>()(
           clients: INITIAL_CLIENTS,
           leads: INITIAL_LEADS,
           adminConfig: INITIAL_ADMIN_CONFIG,
-        });
+        }, adminConfig.adminPassword);
       },
 
       importBackup: (backupData) => {
@@ -453,7 +458,7 @@ export const useClientStore = create<ClientStoreState>()(
             clients: newClients,
             leads: newLeads,
             adminConfig: newAdmin,
-          });
+          }, state.adminConfig.adminPassword);
 
           return {
             clients: newClients,

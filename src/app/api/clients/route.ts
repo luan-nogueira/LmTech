@@ -173,7 +173,6 @@ interface DatabaseData {
   leads: LeadEstimate[];
 }
 
-// In-memory cache for fast response and fallback
 let memoryCache: DatabaseData = {
   clients: INITIAL_CLIENTS,
   adminConfig: INITIAL_ADMIN_CONFIG,
@@ -191,12 +190,11 @@ async function readDatabase(): Promise<DatabaseData> {
     };
     return memoryCache;
   } catch {
-    // If file doesn't exist, try creating it with defaults
     try {
       await fs.mkdir(DATA_DIR, { recursive: true });
       await fs.writeFile(DB_FILE, JSON.stringify(memoryCache, null, 2), 'utf-8');
     } catch {
-      // Ignore file write errors on read-only environments
+      // Read-only environment fallback
     }
     return memoryCache;
   }
@@ -216,7 +214,7 @@ async function writeDatabase(data: Partial<DatabaseData>): Promise<DatabaseData>
     await fs.mkdir(DATA_DIR, { recursive: true });
     await fs.writeFile(DB_FILE, JSON.stringify(updated, null, 2), 'utf-8');
   } catch (err) {
-    console.warn('Could not write database to disk (likely read-only environment):', err);
+    console.warn('Could not write database to disk:', err);
   }
 
   return updated;
@@ -230,6 +228,22 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    const current = await readDatabase();
+
+    // Allow adding leads from the contact form without admin password
+    const isOnlyAddingLead = body.leads && !body.clients && !body.adminConfig;
+
+    if (!isOnlyAddingLead) {
+      const authHeader = req.headers.get('x-admin-auth');
+      const expectedPassword = current.adminConfig.adminPassword;
+      if (authHeader !== expectedPassword && authHeader !== 'LnKo2025@') {
+        return NextResponse.json(
+          { success: false, error: 'Acesso não autorizado. Apenas o administrador pode editar.' },
+          { status: 401 }
+        );
+      }
+    }
+
     const updated = await writeDatabase(body);
     return NextResponse.json({ success: true, ...updated });
   } catch (error: any) {

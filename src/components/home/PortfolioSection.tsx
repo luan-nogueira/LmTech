@@ -1,19 +1,14 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { ExternalLink, Sparkles, Filter, Search, Globe, CheckCircle, Code2, ArrowUpRight, Paintbrush } from 'lucide-react';
+import { ExternalLink, Sparkles, Filter, Search, Globe, CheckCircle, Code2, ArrowUpRight } from 'lucide-react';
 import { useClientStore } from '@/store/useClientStore';
-import { PortfolioCategory, Client } from '@/types/client';
-import { EditProjectCoverModal } from '@/components/admin/EditProjectCoverModal';
+import { PortfolioCategory } from '@/types/client';
 
 export function PortfolioSection() {
-  const { clients, adminConfig, isAuthenticated, syncWithServer } = useClientStore();
+  const { clients, adminConfig, syncWithServer } = useClientStore();
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [searchQuery, setSearchQuery] = useState<string>('');
-
-  // Quick edit cover for admin
-  const [editingClient, setEditingClient] = useState<Client | null>(null);
-  const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
 
   useEffect(() => {
     syncWithServer();
@@ -151,22 +146,6 @@ export function PortfolioSection() {
                       </span>
                     </div>
 
-                    {/* Admin Quick Edit Shortcut Button */}
-                    {isAuthenticated && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingClient(item);
-                          setIsCoverModalOpen(true);
-                        }}
-                        className="absolute top-3 right-28 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-blue-900/90 hover:bg-blue-800 text-white border border-blue-400/50 shadow-lg backdrop-blur-md flex items-center gap-1 transition-transform transform active:scale-95"
-                        title="Alterar capa e título deste projeto"
-                      >
-                        <Paintbrush className="w-3 h-3" />
-                        <span>Editar Capa</span>
-                      </button>
-                    )}
-
                     {/* Highlight Metric Badge */}
                     {item.metricsHighlight && (
                       <div className="absolute bottom-3 left-3 px-3 py-1 rounded-lg bg-blue-950/90 text-blue-200 border border-blue-500/40 text-xs font-semibold backdrop-blur-md shadow-lg">
@@ -267,18 +246,6 @@ export function PortfolioSection() {
         </div>
 
       </div>
-
-      {/* Admin Quick Edit Cover Modal */}
-      {isCoverModalOpen && editingClient && (
-        <EditProjectCoverModal
-          isOpen={isCoverModalOpen}
-          onClose={() => {
-            setIsCoverModalOpen(false);
-            setEditingClient(null);
-          }}
-          client={editingClient}
-        />
-      )}
     </section>
   );
 }
