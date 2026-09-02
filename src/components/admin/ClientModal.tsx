@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { X, Globe, Save, ExternalLink, Sparkles, Image as ImageIcon, DollarSign, Calendar, ShieldCheck, Upload } from 'lucide-react';
+import { X, Globe, Save, ExternalLink, Sparkles, Image as ImageIcon, DollarSign, Calendar, ShieldCheck, Upload, CheckCircle2 } from 'lucide-react';
 import { useClientStore } from '@/store/useClientStore';
 import { Client, PortfolioCategory, ProjectStatus, ProjectType } from '@/types/client';
 import { COVER_PRESETS } from './EditProjectCoverModal';
@@ -71,7 +71,7 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
       setProjectValue(clientToEdit.projectValue ?? '');
       setInitialDeposit(clientToEdit.initialDeposit ?? '');
       setHasMonthlyFee(clientToEdit.hasMonthlyFee ?? false);
-      setMonthlyFeeValue(clientToEdit.monthlyFeeValue ?? '');
+      setMonthlyFeeValue(clientToEdit.monthlyFeeValue ?? 150);
       setMonthlyFeeDueDay(clientToEdit.monthlyFeeDueDay || 10);
       setNotes(clientToEdit.notes || '');
     } else {
@@ -178,11 +178,11 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
-      <div className="relative w-full max-w-3xl rounded-3xl bg-[#0d121d] border border-blue-500/40 shadow-2xl overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md">
+      <div className="relative w-full max-w-3xl max-h-[92vh] rounded-3xl bg-[#0d121d] border border-blue-500/40 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
-        {/* Modal Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-800 bg-[#090d16]">
+        {/* Modal Header (Fixed at top) */}
+        <div className="flex items-center justify-between p-5 sm:p-6 border-b border-slate-800 bg-[#090d16] shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-cyan-400">
               <Sparkles className="w-5 h-5" />
@@ -198,6 +198,7 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
           </div>
 
           <button
+            type="button"
             onClick={onClose}
             className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
           >
@@ -205,8 +206,8 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
           </button>
         </div>
 
-        {/* Modal Form */}
-        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-8 max-h-[80vh] overflow-y-auto">
+        {/* Modal Form / Body (Scrollable with fixed bounds) */}
+        <form onSubmit={handleSubmit} id="client-form" className="flex-1 overflow-y-auto p-5 sm:p-8 space-y-8">
           
           {/* 1. SEÇÃO: DADOS DO CLIENTE */}
           <div className="space-y-4">
@@ -321,18 +322,18 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
                 </label>
 
                 {/* TOGGLE EXIBIR NO SITE */}
-                <label className="inline-flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={showInPortfolio}
-                    onChange={(e) => setShowInPortfolio(e.target.checked)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500 relative"></div>
-                  <span className="text-xs font-bold text-white">
-                    {showInPortfolio ? 'Exibir no Portfólio' : 'Oculto do Portfólio'}
-                  </span>
-                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowInPortfolio(!showInPortfolio)}
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+                    showInPortfolio
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                      : 'bg-slate-800 text-slate-400 border border-slate-700'
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full ${showInPortfolio ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
+                  <span>{showInPortfolio ? 'Exibindo no Portfólio' : 'Oculto do Portfólio'}</span>
+                </button>
               </div>
 
               <div className="flex items-center gap-2">
@@ -459,7 +460,7 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
             </div>
           </div>
 
-          {/* 3. SEÇÃO: FINANCEIRO & MENSALIDADES */}
+          {/* 3. SEÇÃO: FINANCEIRO & MENSALIDADES (Layout 100% Estável, sem saltos) */}
           <div className="space-y-4 pt-4 border-t border-slate-800">
             <h4 className="text-xs uppercase font-bold tracking-wider text-emerald-400 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400" />
@@ -502,63 +503,96 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
               </div>
             </div>
 
-            {/* MENSALIDADE CONTROLE */}
-            <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 space-y-4">
-              <div className="flex items-center justify-between">
+            {/* MENSALIDADE CONTROLE COM OPÇÕES CLARAS E CAMPOS SEMPRE VISÍVEIS */}
+            <div className={`p-4 rounded-2xl border transition-all ${
+              hasMonthlyFee 
+                ? 'bg-emerald-950/20 border-emerald-500/40 shadow-inner' 
+                : 'bg-slate-900/60 border-slate-800'
+            }`}>
+              
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div>
-                  <span className="text-xs font-bold text-white">Cobrança de Mensalidade / Hospedagem</span>
-                  <p className="text-[11px] text-slate-400">Ativa o rastreamento mensal de recorrência (MRR)</p>
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+                    Cobrança de Mensalidade / Hospedagem & Suporte
+                  </span>
+                  <p className="text-[11px] text-slate-400">Rastreamento de recorrência mensal (MRR) no painel</p>
                 </div>
 
-                <label className="inline-flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={hasMonthlyFee}
-                    onChange={(e) => setHasMonthlyFee(e.target.checked)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500 relative"></div>
-                  <span className="text-xs font-bold text-emerald-300">
-                    {hasMonthlyFee ? 'Sim, possui mensalidade' : 'Sem mensalidade'}
-                  </span>
-                </label>
+                {/* Switch Tabs Claro: Sim / Não */}
+                <div className="flex items-center p-1 rounded-xl bg-slate-950 border border-slate-800 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setHasMonthlyFee(true)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                      hasMonthlyFee
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    Sim, Cobrar Mensalidade
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setHasMonthlyFee(false)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                      !hasMonthlyFee
+                        ? 'bg-slate-700 text-slate-200 shadow-md'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    Sem Mensalidade
+                  </button>
+                </div>
               </div>
 
-              {hasMonthlyFee && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-emerald-500/20">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-300">Valor da Mensalidade (R$/mês)</label>
-                    <div className="relative">
-                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 select-none">
-                        R$
-                      </span>
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        placeholder="0,00"
-                        value={monthlyFeeValue}
-                        onChange={(e) => setMonthlyFeeValue(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm font-medium"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-300">Dia de Vencimento todo mês (1 a 31)</label>
+              {/* CAMPOS SEMPRE NA TELA (NÃO SOMEM NEM CAUSAM SALTOS) */}
+              <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t ${
+                hasMonthlyFee ? 'border-emerald-500/20 opacity-100' : 'border-slate-800 opacity-50'
+              }`}>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-300">
+                    Valor da Mensalidade (R$/mês)
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 select-none">
+                      R$
+                    </span>
                     <input
-                      type="number"
-                      min="1"
-                      max="31"
-                      placeholder="10"
-                      value={monthlyFeeDueDay}
-                      onChange={(e) => setMonthlyFeeDueDay(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm font-medium"
+                      type="text"
+                      disabled={!hasMonthlyFee}
+                      inputMode="decimal"
+                      placeholder={hasMonthlyFee ? "150,00" : "0,00 (Desativado)"}
+                      value={hasMonthlyFee ? monthlyFeeValue : ''}
+                      onChange={(e) => setMonthlyFeeValue(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm font-medium disabled:bg-slate-950/60 disabled:cursor-not-allowed"
                     />
                   </div>
                 </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-300">
+                    Dia de Vencimento todo mês (1 a 31)
+                  </label>
+                  <input
+                    type="number"
+                    disabled={!hasMonthlyFee}
+                    min="1"
+                    max="31"
+                    placeholder="10"
+                    value={hasMonthlyFee ? monthlyFeeDueDay : ''}
+                    onChange={(e) => setMonthlyFeeDueDay(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl glass-input text-xs sm:text-sm font-medium disabled:bg-slate-950/60 disabled:cursor-not-allowed"
+                  />
+                </div>
+              </div>
+
+              {!hasMonthlyFee && (
+                <p className="text-[11px] text-slate-400 mt-2 italic">
+                  ℹ️ Este cliente não terá cobranças mensais automáticas nem aparecerá na lista de faturamento recorrente.
+                </p>
               )}
             </div>
-
 
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-300">Anotações Internas (Privado)</label>
@@ -572,26 +606,27 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
             </div>
           </div>
 
-          {/* Modal Footer Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700 transition-colors"
-            >
-              Cancelar
-            </button>
-
-            <button
-              type="submit"
-              className="flex items-center gap-2 px-7 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 shadow-xl shadow-blue-600/30 transition-all"
-            >
-              <Save className="w-4 h-4" />
-              <span>{clientToEdit ? 'Salvar Alterações' : 'Cadastrar Cliente'}</span>
-            </button>
-          </div>
-
         </form>
+
+        {/* Modal Footer Buttons (Fixed at bottom) */}
+        <div className="flex items-center justify-end gap-3 p-4 sm:p-5 border-t border-slate-800 bg-[#090d16] shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700 transition-colors"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            form="client-form"
+            className="flex items-center gap-2 px-7 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 shadow-xl shadow-blue-600/30 transition-all cursor-pointer"
+          >
+            <Save className="w-4 h-4" />
+            <span>{clientToEdit ? 'Salvar Alterações' : 'Cadastrar Cliente'}</span>
+          </button>
+        </div>
 
       </div>
     </div>
