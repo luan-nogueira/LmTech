@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { Client, AdminConfig, LeadEstimate, MonthlyPaymentRecord } from '@/types/client';
+import { Client, AdminConfig, LeadEstimate, PortfolioCategory } from '@/types/client';
 
 const INITIAL_ADMIN_CONFIG: AdminConfig = {
   adminEmail: 'luanmnogueira@gmail.com',
@@ -163,13 +163,32 @@ const INITIAL_LEADS: LeadEstimate[] = [
   }
 ];
 
+// Helper to persist state to server in background
+async function saveToServer(data: { clients?: Client[]; adminConfig?: Partial<AdminConfig>; leads?: LeadEstimate[] }) {
+  if (typeof window === 'undefined') return;
+  try {
+    await fetch('/api/clients', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  } catch (err) {
+    console.warn('Falha ao salvar no servidor:', err);
+  }
+}
+
 interface ClientStoreState {
   clients: Client[];
   leads: LeadEstimate[];
   adminConfig: AdminConfig;
   isAuthenticated: boolean;
+  isHydrated: boolean;
   activeAdminTab: 'dashboard' | 'clients' | 'subscriptions' | 'receipts' | 'leads' | 'settings';
   
+  // Sync
+  syncWithServer: () => Promise<void>;
+  setHydrated: (val: boolean) => void;
+
   // Auth actions
   login: (email: string, pass: string) => boolean;
   logout: () => void;
@@ -179,6 +198,10 @@ interface ClientStoreState {
   // Client actions
   addClient: (clientData: Omit<Client, 'id' | 'createdAt' | 'updatedAt' | 'monthlyPayments'>) => Client;
   updateClient: (id: string, updates: Partial<Client>) => void;
+  updateProjectCoverAndTitle: (
+    id: string, 
+    updates: { projectTitle?: string; thumbnailUrl?: string; companyName?: string; portfolioCategory?: PortfolioCategory }
+  ) => void;
   deleteClient: (id: string) => void;
   togglePortfolioVisibility: (id: string) => void;
   
@@ -207,7 +230,34 @@ export const useClientStore = create<ClientStoreState>()(
       leads: INITIAL_LEADS,
       adminConfig: INITIAL_ADMIN_CONFIG,
       isAuthenticated: false,
+      isHydrated: false,
       activeAdminTab: 'dashboard',
+
+      setHydrated: (val: boolean) => {
+        set({ isHydrated: val });
+      },
+
+      syncWithServer: async () => {
+        if (typeof window === 'undefined') return;
+        try {
+          const res = await fetch('/api/clients');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.clients && Array.isArray(data.clients) && data.clients.length > 0) {
+              set({
+                clients: data.clients,
+                adminConfig: data.adminConfig ? { ...get().adminConfig, ...data.adminConfig } : get().adminConfig,
+                leads: data.leads && Array.isArray(data.leads) ? data.leads : get().leads,
+                isHydrated: true,
+              });
+              return;
+            }
+          }
+        } catch (err) {
+          console.warn('Erro ao sincronizar com servidor, mantendo dados locais:', err);
+        }
+        set({ isHydrated: true });
+      },
 
       login: (email: string, pass: string) => {
         const { adminConfig } = get();
@@ -230,9 +280,11 @@ export const useClientStore = create<ClientStoreState>()(
       },
 
       updateAdminConfig: (newConfig) => {
-        set((state) => ({
-          adminConfig: { ...state.adminConfig, ...newConfig }
-        }));
+        set((state) => {
+          const updated = { ...state.adminConfig, ...newConfig };
+          saveToServer({ adminConfig: updated });
+          return { adminConfig: updated };
+        });
       },
 
       addClient: (clientData) => {
@@ -245,24 +297,25 @@ export const useClientStore = create<ClientStoreState>()(
           updatedAt: now,
         };
 
-        // Initialize current month payment if has monthly fee
         if (newClient.hasMonthlyFee) {
-          const currentYearMonth = now.slice(0, 7); // "YYYY-MM"
+          const currentYearMonth = now.slice(0, 7);
           newClient.monthlyPayments[currentYearMonth] = {
             status: 'pending'
           };
         }
 
-        set((state) => ({
-          clients: [newClient, ...state.clients],
-        }));
+        set((state) => {
+          const updatedClients = [newClient, ...state.clients];
+          saveToServer({ clients: updatedClients });
+          return { clients: updatedClients };
+        });
 
         return newClient;
       },
 
       updateClient: (id, updates) => {
-        set((state) => ({
-          clients: state.clients.map((c) =>
+        set((state) => {
+          const updatedClients = state.clients.map((c) =>
             c.id === id
               ? {
                   ...c,
@@ -270,19 +323,42 @@ export const useClientStore = create<ClientStoreState>()(
                   updatedAt: new Date().toISOString(),
                 }
               : c
-          ),
-        }));
+          );
+          saveToServer({ clients: updatedClients });
+          return { clients: updatedClients };
+        });
+      },
+
+      updateProjectCoverAndTitle: (id, updates) => {
+        set((state) => {
+          const updatedClients = state.clients.map((c) =>
+            c.id === id
+              ? {
+                  ...c,
+                  ...(updates.projectTitle !== undefined && { projectTitle: updates.projectTitle }),
+                  ...(updates.thumbnailUrl !== undefined && { thumbnailUrl: updates.thumbnailUrl }),
+                  ...(updates.companyName !== undefined && { companyName: updates.companyName }),
+                  ...(updates.portfolioCategory !== undefined && { portfolioCategory: updates.portfolioCategory }),
+                  updatedAt: new Date().toISOString(),
+                }
+              : c
+          );
+          saveToServer({ clients: updatedClients });
+          return { clients: updatedClients };
+        });
       },
 
       deleteClient: (id) => {
-        set((state) => ({
-          clients: state.clients.filter((c) => c.id !== id),
-        }));
+        set((state) => {
+          const updatedClients = state.clients.filter((c) => c.id !== id);
+          saveToServer({ clients: updatedClients });
+          return { clients: updatedClients };
+        });
       },
 
       togglePortfolioVisibility: (id) => {
-        set((state) => ({
-          clients: state.clients.map((c) =>
+        set((state) => {
+          const updatedClients = state.clients.map((c) =>
             c.id === id
               ? {
                   ...c,
@@ -290,13 +366,15 @@ export const useClientStore = create<ClientStoreState>()(
                   updatedAt: new Date().toISOString(),
                 }
               : c
-          ),
-        }));
+          );
+          saveToServer({ clients: updatedClients });
+          return { clients: updatedClients };
+        });
       },
 
       setMonthlyPaymentStatus: (clientId, yearMonth, status, notes) => {
-        set((state) => ({
-          clients: state.clients.map((c) => {
+        set((state) => {
+          const updatedClients = state.clients.map((c) => {
             if (c.id !== clientId) return c;
             const currentPayments = { ...c.monthlyPayments };
             const existing = currentPayments[yearMonth] || {};
@@ -313,8 +391,11 @@ export const useClientStore = create<ClientStoreState>()(
               monthlyPayments: currentPayments,
               updatedAt: new Date().toISOString(),
             };
-          }),
-        }));
+          });
+
+          saveToServer({ clients: updatedClients });
+          return { clients: updatedClients };
+        });
       },
 
       addLead: (leadData) => {
@@ -324,21 +405,27 @@ export const useClientStore = create<ClientStoreState>()(
           createdAt: new Date().toISOString(),
           status: 'new',
         };
-        set((state) => ({
-          leads: [newLead, ...state.leads],
-        }));
+        set((state) => {
+          const updatedLeads = [newLead, ...state.leads];
+          saveToServer({ leads: updatedLeads });
+          return { leads: updatedLeads };
+        });
       },
 
       updateLeadStatus: (id, status) => {
-        set((state) => ({
-          leads: state.leads.map((l) => (l.id === id ? { ...l, status } : l)),
-        }));
+        set((state) => {
+          const updatedLeads = state.leads.map((l) => (l.id === id ? { ...l, status } : l));
+          saveToServer({ leads: updatedLeads });
+          return { leads: updatedLeads };
+        });
       },
 
       deleteLead: (id) => {
-        set((state) => ({
-          leads: state.leads.filter((l) => l.id !== id),
-        }));
+        set((state) => {
+          const updatedLeads = state.leads.filter((l) => l.id !== id);
+          saveToServer({ leads: updatedLeads });
+          return { leads: updatedLeads };
+        });
       },
 
       resetToDefaults: () => {
@@ -347,16 +434,33 @@ export const useClientStore = create<ClientStoreState>()(
           leads: INITIAL_LEADS,
           adminConfig: INITIAL_ADMIN_CONFIG,
         });
+        saveToServer({
+          clients: INITIAL_CLIENTS,
+          leads: INITIAL_LEADS,
+          adminConfig: INITIAL_ADMIN_CONFIG,
+        });
       },
 
       importBackup: (backupData) => {
-        set((state) => ({
-          clients: backupData.clients || state.clients,
-          leads: backupData.leads || state.leads,
-          adminConfig: backupData.adminConfig
+        set((state) => {
+          const newClients = backupData.clients || state.clients;
+          const newLeads = backupData.leads || state.leads;
+          const newAdmin = backupData.adminConfig
             ? { ...state.adminConfig, ...backupData.adminConfig }
-            : state.adminConfig,
-        }));
+            : state.adminConfig;
+
+          saveToServer({
+            clients: newClients,
+            leads: newLeads,
+            adminConfig: newAdmin,
+          });
+
+          return {
+            clients: newClients,
+            leads: newLeads,
+            adminConfig: newAdmin,
+          };
+        });
       },
     }),
     {
@@ -370,7 +474,12 @@ export const useClientStore = create<ClientStoreState>()(
               removeItem: () => {},
             }
       ),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.setHydrated(true);
+          state.syncWithServer();
+        }
+      },
     }
   )
 );
-

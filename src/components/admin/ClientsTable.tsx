@@ -3,11 +3,12 @@
 import { useState, useMemo } from 'react';
 import { 
   Plus, Search, Globe, Phone, Mail, Edit3, Trash2, CheckCircle2, 
-  ExternalLink, Eye, EyeOff, DollarSign, Calendar, Sparkles, Filter 
+  ExternalLink, Eye, EyeOff, DollarSign, Calendar, Sparkles, Filter, Image as ImageIcon, Paintbrush 
 } from 'lucide-react';
 import { useClientStore } from '@/store/useClientStore';
 import { Client } from '@/types/client';
 import { ClientModal } from './ClientModal';
+import { EditProjectCoverModal } from './EditProjectCoverModal';
 
 export function ClientsTable() {
   const { clients, togglePortfolioVisibility, deleteClient } = useClientStore();
@@ -17,6 +18,10 @@ export function ClientsTable() {
   const [filterStatus, setFilterStatus] = useState('Todos');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
+
+  // Quick Cover & Title edit modal
+  const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
+  const [selectedClientForCover, setSelectedClientForCover] = useState<Client | null>(null);
 
   const filteredClients = useMemo(() => {
     return clients.filter((c) => {
@@ -44,6 +49,11 @@ export function ClientsTable() {
     setIsModalOpen(true);
   };
 
+  const handleOpenCoverModal = (client: Client) => {
+    setSelectedClientForCover(client);
+    setIsCoverModalOpen(true);
+  };
+
   const handleDelete = (id: string, name: string) => {
     if (confirm(`Tem certeza que deseja excluir o cliente "${name}"?`)) {
       deleteClient(id);
@@ -64,7 +74,7 @@ export function ClientsTable() {
         <div>
           <h2 className="text-xl sm:text-2xl font-black text-white">Meus Clientes & Projetos</h2>
           <p className="text-xs text-slate-400">
-            Gerencie contratos, valores cobrados, links no ar e ative quais aparecem no portfólio público.
+            Gerencie contratos, links no ar, e edite as capas e títulos dos projetos que aparecem no site.
           </p>
         </div>
 
@@ -134,7 +144,7 @@ export function ClientsTable() {
             <thead className="bg-[#070b13] border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400 font-bold">
               <tr>
                 <th className="px-6 py-4">Cliente & Empresa</th>
-                <th className="px-6 py-4">Projeto & Link no Ar</th>
+                <th className="px-6 py-4">Capa, Projeto & Título</th>
                 <th className="px-6 py-4 text-center">No Portfólio?</th>
                 <th className="px-6 py-4">Financeiro</th>
                 <th className="px-6 py-4">Status</th>
@@ -164,7 +174,7 @@ export function ClientsTable() {
                               className="hover:text-emerald-400 transition-colors flex items-center gap-1"
                               title="Chamar no WhatsApp"
                             >
-                              <Phone className="w-3 h-3" />
+                              <Phone className="w-3.5 h-3.5" />
                               <span>{client.phone}</span>
                             </button>
                             {client.email && (
@@ -176,30 +186,62 @@ export function ClientsTable() {
                         </div>
                       </td>
 
-                      {/* 2. Projeto & Link */}
+                      {/* 2. Capa, Projeto & Título */}
                       <td className="px-6 py-4">
-                        <div className="space-y-1.5">
-                          <div className="font-semibold text-slate-200">{client.projectTitle}</div>
-                          <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-950/80 text-cyan-300 border border-blue-500/30">
-                              {client.portfolioCategory}
-                            </span>
-
-                            {isLive ? (
-                              <a
-                                href={client.projectUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-400 hover:text-cyan-300 underline"
-                                title="Abrir link do cliente no ar"
-                              >
-                                <span>Ver Site no Ar</span>
-                                <ExternalLink className="w-3 h-3" />
-                              </a>
-                            ) : (
-                              <span className="text-[11px] text-slate-500 italic">Sem link cadastrado</span>
-                            )}
+                        <div className="flex items-start gap-3">
+                          
+                          {/* Clickable thumbnail to edit cover */}
+                          <div 
+                            onClick={() => handleOpenCoverModal(client)}
+                            className="relative w-16 h-12 rounded-lg overflow-hidden bg-slate-950 border border-slate-700 hover:border-cyan-400 cursor-pointer shrink-0 group/thumb transition-all shadow-md"
+                            title="Clique para alterar a capa do projeto"
+                          >
+                            <img
+                              src={client.thumbnailUrl || 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop'}
+                              alt=""
+                              className="w-full h-full object-cover group-hover/thumb:scale-110 transition-transform duration-300"
+                            />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/thumb:opacity-100 flex items-center justify-center transition-opacity text-cyan-300">
+                              <ImageIcon className="w-4 h-4" />
+                            </div>
                           </div>
+
+                          <div className="space-y-1">
+                            <div className="font-semibold text-slate-200 line-clamp-1">
+                              {client.projectTitle}
+                            </div>
+                            
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-950/80 text-cyan-300 border border-blue-500/30">
+                                {client.portfolioCategory}
+                              </span>
+
+                              <button
+                                type="button"
+                                onClick={() => handleOpenCoverModal(client)}
+                                className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-400 hover:text-cyan-300 bg-cyan-950/50 hover:bg-cyan-900/60 px-2 py-0.5 rounded border border-cyan-800 transition-colors"
+                              >
+                                <Paintbrush className="w-3 h-3" />
+                                <span>Alterar Capa & Título</span>
+                              </button>
+
+                              {isLive ? (
+                                <a
+                                  href={client.projectUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-400 hover:text-cyan-300 underline"
+                                  title="Abrir link do cliente no ar"
+                                >
+                                  <span>Ver Site</span>
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              ) : (
+                                <span className="text-[10px] text-slate-500 italic">Sem link</span>
+                              )}
+                            </div>
+                          </div>
+
                         </div>
                       </td>
 
@@ -267,6 +309,14 @@ export function ClientsTable() {
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button
+                            onClick={() => handleOpenCoverModal(client)}
+                            className="p-2 rounded-lg bg-blue-950/60 hover:bg-blue-900 text-cyan-300 border border-blue-700/60 transition-colors"
+                            title="Alterar Capa e Título do Projeto"
+                          >
+                            <ImageIcon className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
                             onClick={() => openClientWhatsApp(client.phone, client.name)}
                             className="p-2 rounded-lg bg-slate-800 hover:bg-emerald-900/60 text-slate-300 hover:text-emerald-300 border border-slate-700 transition-colors"
                             title="Conversar no WhatsApp"
@@ -277,7 +327,7 @@ export function ClientsTable() {
                           <button
                             onClick={() => handleOpenEdit(client)}
                             className="p-2 rounded-lg bg-slate-800 hover:bg-blue-900/60 text-slate-300 hover:text-cyan-300 border border-slate-700 transition-colors"
-                            title="Editar Cliente"
+                            title="Editar Dados Completos do Cliente"
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
@@ -307,7 +357,19 @@ export function ClientsTable() {
         </div>
       </div>
 
-      {/* Client Modal (Add/Edit) */}
+      {/* Quick Cover & Title Modal */}
+      {isCoverModalOpen && selectedClientForCover && (
+        <EditProjectCoverModal
+          isOpen={isCoverModalOpen}
+          onClose={() => {
+            setIsCoverModalOpen(false);
+            setSelectedClientForCover(null);
+          }}
+          client={selectedClientForCover}
+        />
+      )}
+
+      {/* Full Client Modal (Add/Edit) */}
       {isModalOpen && (
         <ClientModal
           isOpen={isModalOpen}

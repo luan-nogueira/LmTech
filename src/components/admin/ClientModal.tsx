@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { X, Globe, Save, ExternalLink, Sparkles, Image, DollarSign, Calendar, ShieldCheck } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { X, Globe, Save, ExternalLink, Sparkles, Image as ImageIcon, DollarSign, Calendar, ShieldCheck, Upload } from 'lucide-react';
 import { useClientStore } from '@/store/useClientStore';
 import { Client, PortfolioCategory, ProjectStatus, ProjectType } from '@/types/client';
+import { COVER_PRESETS } from './EditProjectCoverModal';
 
 interface ClientModalProps {
   isOpen: boolean;
@@ -11,17 +12,9 @@ interface ClientModalProps {
   clientToEdit?: Client | null;
 }
 
-const PRESET_MOCKUPS = [
-  { label: 'Academia / Fitness', url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop' },
-  { label: 'Logística / Frotas', url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1200&auto=format&fit=crop' },
-  { label: 'Imobiliária / Arquitetura', url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop' },
-  { label: 'Saúde / Odontologia', url: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=1200&auto=format&fit=crop' },
-  { label: 'Finanças / Corporativo', url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop' },
-  { label: 'E-commerce / Varejo', url: 'https://images.unsplash.com/photo-1556742049-0a67e5572293?q=80&w=1200&auto=format&fit=crop' },
-];
-
 export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps) {
   const { addClient, updateClient } = useClientStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form State
   const [name, setName] = useState('');
@@ -94,7 +87,7 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
       setProjectDescription('');
       setProjectUrl('https://');
       setShowInPortfolio(true);
-      setThumbnailUrl(PRESET_MOCKUPS[0].url);
+      setThumbnailUrl(COVER_PRESETS[0].url);
       setTagsStr('Next.js, React, Tailwind, TypeScript');
       setMetricsHighlight('+150% Conversão');
       setStatus('delivered');
@@ -108,6 +101,20 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
   }, [clientToEdit, isOpen]);
 
   if (!isOpen) return null;
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      if (result) {
+        setThumbnailUrl(result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,19 +145,20 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
       projectDescription,
       projectUrl: projectUrl.trim(),
       showInPortfolio,
-      thumbnailUrl: thumbnailUrl || PRESET_MOCKUPS[0].url,
+      thumbnailUrl: thumbnailUrl || COVER_PRESETS[0].url,
       tags: tags.length > 0 ? tags : ['Next.js', 'React', 'Tailwind'],
       metricsHighlight: metricsHighlight || undefined,
       status,
-      startDate: new Date().toISOString().slice(0, 10),
+      startDate: clientToEdit?.startDate || new Date().toISOString().slice(0, 10),
+      deliveryDate: clientToEdit?.deliveryDate,
       projectValue: parsedProjectValue,
       initialDeposit: parsedInitialDeposit,
+      installmentsRemaining: clientToEdit?.installmentsRemaining ?? 0,
       hasMonthlyFee,
       monthlyFeeValue: hasMonthlyFee ? parsedMonthlyFee : 0,
       monthlyFeeDueDay: Number(monthlyFeeDueDay) || 10,
       notes: notes || undefined,
     };
-
 
     if (clientToEdit) {
       updateClient(clientToEdit.id, clientData);
@@ -304,7 +312,7 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
               </div>
             </div>
 
-            {/* URL DO SITE NO AR (SUPER IMPORTANTE!) */}
+            {/* URL DO SITE NO AR */}
             <div className="p-4 rounded-2xl bg-blue-950/30 border border-blue-500/40 space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
@@ -345,31 +353,49 @@ export function ClientModal({ isOpen, onClose, clientToEdit }: ClientModalProps)
                 </button>
               </div>
               <p className="text-[11px] text-slate-400">
-                💡 Ao colocar o link e marcar &ldquo;Exibir no Portfólio&rdquo;, o card do cliente com botão clicável para o site dele aparecerá instantaneamente na página inicial!
+                💡 Ao colocar o link e marcar &ldquo;Exibir no Portfólio&rdquo;, o card do cliente aparecerá com botão clicável para o site dele na página inicial!
               </p>
             </div>
 
-            {/* Mockup / Image presets */}
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
-                <span>Imagem de Capa / Mockup do Projeto:</span>
-                <span className="text-[11px] text-slate-400">Escolha um preset ou cole a URL</span>
-              </label>
+            {/* Mockup / Image presets & Upload */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-slate-300">
+                  Imagem de Capa / Mockup do Projeto:
+                </label>
+                
+                {/* Upload Button */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold text-cyan-300 bg-blue-950/80 hover:bg-blue-900 border border-blue-600/40 transition-colors"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Upload Imagem do PC</span>
+                </button>
+              </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {PRESET_MOCKUPS.map((preset, idx) => (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-1 rounded-xl bg-slate-950/60 border border-slate-800">
+                {COVER_PRESETS.map((preset, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setThumbnailUrl(preset.url)}
                     className={`p-2 rounded-xl border text-left text-[11px] flex items-center gap-2 transition-all ${
                       thumbnailUrl === preset.url
-                        ? 'bg-blue-950/60 border-cyan-400 text-white'
+                        ? 'bg-blue-950/80 border-cyan-400 text-white ring-1 ring-cyan-400'
                         : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white'
                     }`}
                   >
                     <img src={preset.url} alt="" className="w-8 h-8 rounded-lg object-cover" />
-                    <span className="truncate">{preset.label}</span>
+                    <span className="truncate font-medium">{preset.label}</span>
                   </button>
                 ))}
               </div>
